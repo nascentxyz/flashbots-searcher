@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import Terminal from 'react-console-emulator'
-import { Link as ChakraLink, Text, Code, Heading } from '@chakra-ui/react'
+import { Link as ChakraLink, Text, Code, Heading, Input } from '@chakra-ui/react'
 
 import { Container, SimulationTerminal } from './'
+import { xor } from 'lodash';
 
 const SearcherTerminal = () => {
   const term_ref = useRef();
@@ -23,52 +24,12 @@ const SearcherTerminal = () => {
   const [nftData, setNftData] = useState('unknown');
   const [nftAddress, setNftAddress] = useState('unknown');
 
-  // ** Update the welcome message whenever one of our state variables changes
-  useEffect(() => {
-    // updateTerminalConfigMessage();
-    console.log(config_term_ref)
-    const terminal = config_term_ref.current ?? {
-      pushToStdout: (_v) => console.error("Failed to get config terminal reference!"),
-      clearStdout: () => console.error("Failed to get config terminal reference!"),
-      clearInput: () => console.error("Failed to get config terminal reference!"),
-      welcomeMessage: ''
-    };
-    terminal.clearStdout();
-    terminal.clearInput();
-    terminal.welcomeMessage = '';
-    terminal.pushToStdout(`
-        Searcher Configuration\n
-        Set in the left terminal.\n
-              -------- \n
-        Chain ID: ${currentChainId} \n
-        Flashbots Relay Endpoint: ${flashbotsRelayEndpoint} \n
-        Flashbots Signer Private Key: ${flashbotsPrivateKey} \n
-        Max Fee Per Gas Gwei: ${maxFeePerGasGwei} \n
-        Max Priority Fee Per Gas Gwei: ${maxPriorityFeePerGasGwei} \n
-        NFT Minter Private Key: ${nftMinterPrivateKey} \n
-        NFT Value Wei: ${nftValueWei} \n
-        NFT Data: ${nftData} \n
-        NFT Address: ${nftAddress} \n
-      `);
-  }, [
-      currentChainId,
-      flashbotsRelayEndpoint,
-      flashbotsPrivateKey,
-      maxFeePerGasGwei,
-      maxPriorityFeePerGasGwei,
-      nftMinterPrivateKey,
-      nftValueWei,
-      nftData,
-      nftAddress
-  ]);
-
   return (
     <Container
     flexDirection="row"
     width="100%"
     margin="auto"
     px={6}
-    // pt={6}
   >
     <Container
       flexDirection="column"
@@ -81,6 +42,14 @@ const SearcherTerminal = () => {
           width="100%"
           pb={6}
         >
+          <Container
+            flexDirection="column"
+            width="100%"
+            maxWidth="400px"
+            maxHeight="400px"
+            height="400px"
+            px={4}
+          >
         <Terminal
             ref={term_ref}
             welcomeMessage={'Welcome to The Search... \nType \'help\' for a list of commands.'}
@@ -89,7 +58,7 @@ const SearcherTerminal = () => {
               height: '400px',
               maxHeight: '400px',
               marginRight: '1.5em',
-              maxWidth: '500px',
+              maxWidth: '400px',
               width: '100%',
             }}
             commands={{
@@ -183,29 +152,129 @@ const SearcherTerminal = () => {
               },
             }}
           />
-          <Container
-            flexDirection="column"
-            width="100%"
-            maxWidth="500px"
-            maxHeight="400px"
-            height="400px"
-            p={4}
-          >
-            <Heading as="h4" mr='auto' mb={2}>Searcher Config</Heading>
-            <Text mr='auto' fontWeight={800} mb={2}>No data is stored - verify yourself on <ChakraLink
+          <Text mr='auto' fontWeight={800} pt={4} mb={2}>No data is stored - verify yourself on <ChakraLink
               isExternals
               href="https://github.com/abigger87/flashbots-minting-searcher"
               color='blue.400'
             >GitHub</ChakraLink></Text>
-            <Text mr='auto'>Chain ID: <Code>{currentChainId}</Code></Text>
-            <Text mr='auto'>Flashbots Relay Endpoint: <Code>{flashbotsRelayEndpoint}</Code></Text>
-            <Text mr='auto'>Flashbots Private Key: <Code>{flashbotsPrivateKey}</Code></Text>
-            <Text mr='auto'>Max Fee Per Gas Gwei: <Code>{maxFeePerGasGwei}</Code></Text>
-            <Text mr='auto'>Max Priority Fee Per Gas Gwei: <Code>{maxPriorityFeePerGasGwei}</Code></Text>
-            <Text mr='auto'>NFT Minter Private Key: <Code>{nftMinterPrivateKey}</Code></Text>
-            <Text mr='auto'>NFT Value Wei: <Code>{nftValueWei}</Code></Text>
-            <Text mr='auto'>NFT Data: <Code>{nftData}</Code></Text>
-            <Text mr='auto'>NFT Address: <Code>{nftAddress}</Code></Text>
+          </Container>
+          <Container
+            flexDirection="column"
+            width="100%"
+            maxWidth="600px"
+            maxHeight="400px"
+            height="400px"
+            px={4}
+          >
+            <Heading as="h6" fontSize='2xl' mr='auto' mb={2}>Searcher Config</Heading>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+              <Text mr='auto' width='fit-content' minWidth='200px'>Chain ID:</Text>
+              <Input
+                  value={currentChainId}
+                  onChange={(e) => setCurrentChainId(parseInt(e.target.value))}
+                  size="sm"
+                />
+            </Container>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+            <Text mr='auto' minWidth='200px'>Flashbots Relay Endpoint:</Text>
+            <Input
+                value={flashbotsRelayEndpoint}
+                onChange={(e) => setFlashbotsRelayEndpoint(e.target.value)}
+                size="sm"
+              />
+            </Container>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+            <Text mr='auto' minWidth='200px'>Flashbots Private Key:</Text>
+            <Input
+                value={flashbotsPrivateKey}
+                onChange={(e) => setFlashbotsPrivateKey(e.target.value)}
+                size="sm"
+              />
+            </Container>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+            <Text mr='auto' minWidth='200px'>Max Fee Gwei:</Text>
+            <Input
+                value={maxFeePerGasGwei}
+                onChange={(e) => setMaxFeePerGasGwei(parseInt(e.target.value))}
+                size="sm"
+              />
+            </Container>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+              <Text mr='auto' minWidth='200px'>Max Priority Fee Gwei:</Text>
+              <Input
+                  value={maxPriorityFeePerGasGwei}
+                  onChange={(e) => setMaxPriorityFeePerGasGwei(parseInt(e.target.value))}
+                  size="sm"
+                />
+            </Container>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+              <Text mr='auto' minWidth='200px'>NFT Minter Private Key:</Text>
+              <Input
+                  value={nftMinterPrivateKey}
+                  onChange={(e) => setNftMinterPrivateKey(e.target.value)}
+                  size="sm"
+                />
+            </Container>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+              <Text mr='auto' minWidth='200px'>NFT Value Wei:</Text>
+              <Input
+                  value={nftValueWei}
+                  onChange={(e) => setNftValueWei(parseInt(e.target.value))}
+                  size="sm"
+                />
+            </Container>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+              <Text mr='auto' minWidth='200px'>NFT Data:</Text>
+              <Input
+                  value={nftData}
+                  onChange={(e) => setNftData(e.target.value)}
+                  size="sm"
+                />
+            </Container>
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+              <Text mr='auto' minWidth='200px'>NFT Address:</Text>
+              <Input
+                  value={nftAddress}
+                  onChange={(e) => setNftAddress(e.target.value)}
+                  size="sm"
+                />
+            </Container>
           </Container>
 
           {/* <Terminal
