@@ -5,7 +5,8 @@ const Hero = ({ title }: { title: string }) => (
   <Flex
     justifyContent="center"
     alignItems="center"
-    height="10vh"
+    height="auto"
+    p={4}
     bgGradient="linear(to-l, #7928CA, #FF0080)"
     bgClip="text"
   >

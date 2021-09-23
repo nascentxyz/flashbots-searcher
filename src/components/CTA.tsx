@@ -9,13 +9,13 @@ const CTA = () => (
     bottom="0"
     width="100%"
     maxWidth="48rem"
-    py={3}
+    // py={3}
   >
       <Container
       flexDirection="column"
       width="100%"
       maxWidth="48rem"
-      py={3}
+      pb={4}
     >
       {/* <Container
         flexDirection="row"
@@ -29,13 +29,13 @@ const CTA = () => (
         </Text>
       </Container> */}
         <Container
-        flexDirection="row"
-        justifyContent="center"
-        margin="auto"
-        width="100%"
-        maxWidth="48rem"
-        py={3}
-      >
+          flexDirection="row"
+          justifyContent="center"
+          margin="auto"
+          width="100%"
+          maxWidth="48rem"
+          py={3}
+        >
         <ChakraLink
           isExternal
           href="https://nascent.xyz"
@@ -62,6 +62,7 @@ const CTA = () => (
           </Button>
         </ChakraLink>
       </Container>
+      <Text>❤️ Thanks: <Code>0x47C5C2Dbe93E4dCd9d45c856Bb6d65B66965f382</Code>{" "} ❤️</Text>
     </Container>
   </Container>
 )

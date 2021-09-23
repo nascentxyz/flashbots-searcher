@@ -6,3 +6,4 @@ export { default as Header } from "./Header";
 export { default as Hero } from "./Hero";
 export { default as Main } from "./Main";
 export { default as SearcherTerminal } from "./SearcherTerminal";
+export { default as SimulationTerminal } from "./SimulationTerminal";

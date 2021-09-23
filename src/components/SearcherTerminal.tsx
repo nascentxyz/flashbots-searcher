@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import Terminal from 'react-console-emulator'
 
-import { Container } from './'
+import { Container, SimulationTerminal } from './'
 
 const SearcherTerminal = () => {
   const term_ref = useRef();
@@ -21,14 +21,25 @@ const SearcherTerminal = () => {
   const [nftData, setNftData] = useState('unknown');
   const [nftAddress, setNftAddress] = useState('unknown');
 
+  const [isLocked, setIsLocked] = useState(false);
+
   return (
+    <Container
+    flexDirection="row"
+    width="100%"
+    margin="auto"
+    px={6}
+  >
+    <Container
+      flexDirection="column"
+      width="100%"
+    >
     <Container
           flexDirection="row"
           justifyContent="center"
           margin="auto"
           width="100%"
-          px={8}
-          py={3}
+          pb={6}
         >
         <Terminal
             ref={term_ref}
@@ -37,7 +48,7 @@ const SearcherTerminal = () => {
             style={{
               height: '400px',
               maxHeight: '400px',
-              marginRight: '2em',
+              marginRight: '1.5em',
               maxWidth: '500px',
               width: '100%',
 
@@ -51,10 +62,14 @@ const SearcherTerminal = () => {
                   // if(terminal !== undefined) {
                   //   terminal.pushToStdout('Enter ')
                   // }
+                  setIsLocked(true);
                   // ** Try to parse the first argument as the chain id
                   const parsed_chain_id = parseInt(arguments[0]);
+                  console.log("Parsed chain id:", parsed_chain_id);
                   if (parsed_chain_id) {
                     setCurrentChainId(parsed_chain_id);
+                    console.log("set chain id:", currentChainId)
+                    setIsLocked(false);
                     return 'Chain Id set to ' + parsed_chain_id;
                   }
                   return 'Invalid Chain Id';
@@ -99,11 +114,12 @@ const SearcherTerminal = () => {
                 maxWidth: '500px',
                 width: '100%',
               }}
+              locked={isLocked}
               commands={{}}
               welcomeMessage={`
                   Searcher Configuration\n
                   Set in the left terminal.\n
-                  \n
+                        -------- \n
                   Chain ID: ${currentChainId} \n
                   Flashbots Relay Endpoint: ${flashbotsRelayEndpoint} \n
                   Flashbots Signer Private Key: ${flashbotsPrivateKey} \n
@@ -117,6 +133,9 @@ const SearcherTerminal = () => {
               readOnly
             />
         </Container>
+        <SimulationTerminal />
+      </Container>
+    </Container>
   )
 };
 
