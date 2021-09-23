@@ -1,9 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Terminal from 'react-console-emulator'
-import { Link as ChakraLink, Text, Code, Heading, Input } from '@chakra-ui/react'
+import {
+  Link as ChakraLink,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Text,
+  Heading,
+  Input
+} from '@chakra-ui/react';
 
 import { Container, SimulationTerminal } from './'
-import { xor } from 'lodash';
 
 const SearcherTerminal = () => {
   const term_ref = useRef();
@@ -14,15 +23,15 @@ const SearcherTerminal = () => {
   // TODO: unless we add the execute bundle here and contain the simulation logic here
 
   const [currentChainId, setCurrentChainId] = useState(1);
-  const [flashbotsRelayEndpoint, setFlashbotsRelayEndpoint] = useState('unknown');
-  const [flashbotsPrivateKey, setFlashbotsPrivateKey] = useState('unknown');
+  const [flashbotsRelayEndpoint, setFlashbotsRelayEndpoint] = useState('');
+  const [flashbotsPrivateKey, setFlashbotsPrivateKey] = useState('');
   // TODO: what should this default param be?
   const [maxFeePerGasGwei, setMaxFeePerGasGwei] = useState(42000);
   const [maxPriorityFeePerGasGwei, setMaxPriorityFeePerGasGwei] = useState(42000);
-  const [nftMinterPrivateKey, setNftMinterPrivateKey] = useState('unknown');
-  const [nftValueWei, setNftValueWei] = useState(0);
-  const [nftData, setNftData] = useState('unknown');
-  const [nftAddress, setNftAddress] = useState('unknown');
+  const [nftMinterPrivateKey, setNftMinterPrivateKey] = useState('');
+  const [nftValueWei, setNftValueWei] = useState(0.01);
+  const [nftData, setNftData] = useState('');
+  const [nftAddress, setNftAddress] = useState('');
 
   return (
     <Container
@@ -173,11 +182,22 @@ const SearcherTerminal = () => {
               pb={2}
             >
               <Text mr='auto' width='fit-content' minWidth='200px'>Chain ID:</Text>
-              <Input
-                  value={currentChainId}
-                  onChange={(e) => setCurrentChainId(parseInt(e.target.value))}
-                  size="sm"
-                />
+              <NumberInput
+                defaultValue={1}
+                min={1}
+                value={currentChainId}
+                keepWithinRange={true}
+                onChange={(e) => setCurrentChainId(parseInt(e) ? parseInt(e) : 1)}
+                clampValueOnBlur={false}
+                width='100%'
+                size='sm'
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
             </Container>
             <Container
               flexDirection="row"
@@ -209,11 +229,21 @@ const SearcherTerminal = () => {
               pb={2}
             >
             <Text mr='auto' minWidth='200px'>Max Fee Gwei:</Text>
-            <Input
+            <NumberInput
+                min={1}
                 value={maxFeePerGasGwei}
-                onChange={(e) => setMaxFeePerGasGwei(parseInt(e.target.value))}
-                size="sm"
-              />
+                keepWithinRange={true}
+                onChange={(e) => setMaxFeePerGasGwei(parseInt(e) ? parseInt(e) : 42000)}
+                clampValueOnBlur={false}
+                width='100%'
+                size='sm'
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
             </Container>
             <Container
               flexDirection="row"
@@ -221,11 +251,21 @@ const SearcherTerminal = () => {
               pb={2}
             >
               <Text mr='auto' minWidth='200px'>Max Priority Fee Gwei:</Text>
-              <Input
-                  value={maxPriorityFeePerGasGwei}
-                  onChange={(e) => setMaxPriorityFeePerGasGwei(parseInt(e.target.value))}
-                  size="sm"
-                />
+              <NumberInput
+                min={1}
+                value={maxPriorityFeePerGasGwei}
+                keepWithinRange={true}
+                onChange={(e) => setMaxPriorityFeePerGasGwei(parseInt(e) ? parseInt(e) : 42000)}
+                clampValueOnBlur={false}
+                width='100%'
+                size='sm'
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
             </Container>
             <Container
               flexDirection="row"
@@ -245,11 +285,23 @@ const SearcherTerminal = () => {
               pb={2}
             >
               <Text mr='auto' minWidth='200px'>NFT Value Wei:</Text>
-              <Input
-                  value={nftValueWei}
-                  onChange={(e) => setNftValueWei(parseInt(e.target.value))}
-                  size="sm"
-                />
+              <NumberInput
+                step={0.01}
+                min={0}
+                precision={4}
+                value={nftValueWei}
+                keepWithinRange={true}
+                onChange={(e) => setNftValueWei(parseFloat(e) ? parseFloat(e) : 0)}
+                clampValueOnBlur={false}
+                width='100%'
+                size='sm'
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
             </Container>
             <Container
               flexDirection="row"
