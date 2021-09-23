@@ -5,16 +5,13 @@ import { Container } from './'
 const CTA = () => (
   <Container
     flexDirection="row"
-    position="fixed"
     bottom="0"
     width="100%"
-    maxWidth="48rem"
-    // py={3}
+    py={3}
   >
       <Container
       flexDirection="column"
       width="100%"
-      maxWidth="48rem"
       pb={4}
     >
       {/* <Container

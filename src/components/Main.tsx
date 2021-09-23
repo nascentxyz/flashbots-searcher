@@ -4,7 +4,6 @@ const Main = (props: StackProps) => (
   <Stack
     spacing="1.5em"
     width="100%"
-    // maxWidth="48em"
     mt="0"
     pt="2em"
     px="1em"

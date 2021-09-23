@@ -9,7 +9,7 @@ import {
 } from '../components';
 
 const Index = () => (
-  <Container height="100vh">
+  <Container height="100%">
     <Main>
       <Hero />
       <SearcherTerminal />
