@@ -12,11 +12,30 @@ import {
   Input,
   Select
 } from '@chakra-ui/react';
+import styled from 'styled-components';
+
 
 import { providers, Wallet, BigNumber } from "ethers";
 import { FlashbotsBundleProvider } from "@flashbots/ethers-provider-bundle";
 
-import { Container, SimulationTerminal } from './'
+import { Container, SimulationTerminal, GlitchButton } from './'
+
+// ** Container changes to flex-direction column for small screens
+const FlexContainer = styled(Container)`
+  @media (max-width: 1000px) {
+    flex-direction: column;
+  }
+`;
+
+const InnerFlexContainer = styled(Container)`
+  @media (max-width: 1000px) {
+    width: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+    margin: auto;
+    max-width: 800px;
+  }
+`;
 
 const SearcherTerminal = () => {
   const term_ref = useRef();
@@ -208,19 +227,20 @@ const SearcherTerminal = () => {
       flexDirection="column"
       width="100%"
     >
-    <Container
+    <FlexContainer
           flexDirection="row"
           justifyContent="center"
           margin="auto"
           width="100%"
           pb={6}
         >
-          <Container
+          <InnerFlexContainer
             flexDirection="column"
             width="100%"
-            maxWidth="400px"
+            maxWidth="600px"
             maxHeight="600px"
             height="600px"
+            marginRight="1.5em"
             px={4}
           >
         <Terminal
@@ -230,8 +250,8 @@ const SearcherTerminal = () => {
             style={{
               height: '600px',
               maxHeight: '600px',
-              marginRight: '1.5em',
-              maxWidth: '400px',
+              // marginRight: '1.5em',
+              // maxWidth: '600px',
               width: '100%',
             }}
             commands={{
@@ -342,12 +362,12 @@ const SearcherTerminal = () => {
             }}
           />
           <Text mr='auto' fontWeight={800} pt={4} mb={2}>No data is stored - verify yourself on <ChakraLink
-              isExternals
+              isExternal
               href="https://github.com/abigger87/flashbots-minting-searcher"
               color='blue.400'
             >GitHub</ChakraLink></Text>
-          </Container>
-          <Container
+          </InnerFlexContainer>
+          <InnerFlexContainer
             flexDirection="column"
             width="100%"
             maxWidth="600px"
@@ -527,7 +547,33 @@ const SearcherTerminal = () => {
                   size="sm"
                 />
             </Container>
-          </Container>
+
+            <Container
+              flexDirection="row"
+              width="100%"
+              py={4}
+              marginBottom="auto"
+            >
+              <Container
+                w="100%"
+                m={2}
+              >
+                <GlitchButton id="glitch-btn-1" color="#dc143c" glitchColor="#800000" content="Stop" onclick={(_e) => {
+                  console.log("Stopping the searcher...");
+                  setIsMinting(false);
+                }} />
+              </Container>
+              <Container
+                w="100%"
+                m={2}
+              >
+                <GlitchButton id="glitch-btn-2" color="#4fa682" glitchColor="#3F8468" content="Start" onclick={(_e) => {
+                  console.log("Starting the searcher...");
+                  setIsMinting(true);
+                }} />
+              </Container>
+            </Container>
+          </InnerFlexContainer>
 
           {/* <Terminal
               ref={config_term_ref}
@@ -543,8 +589,14 @@ const SearcherTerminal = () => {
               readOnly
               noHistory
             /> */}
-        </Container>
-        <SimulationTerminal />
+        </FlexContainer>
+        <InnerFlexContainer
+          width='100%'
+          maxWidth='calc(1200px - 1em)'
+          // mx={8}
+        >
+          <SimulationTerminal />
+        </InnerFlexContainer>
       </Container>
     </Container>
   )

@@ -10,9 +10,7 @@ const SimulationTerminal = () => {
           height: '250px',
           maxHeight: '250px',
           width: '100%',
-          maxWidth: 'calc(1000px + 1.5em)',
-          paddingLeft: '2em',
-          paddingRight: '2em',
+          padding: '2em',
         }}
         commands={{}}
         welcomeMessage={`
