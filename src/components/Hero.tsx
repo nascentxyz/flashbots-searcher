@@ -7,16 +7,16 @@ const Hero = ({ title }: { title: string }) => (
     alignItems="center"
     height="auto"
     p={4}
-    // ** Nascent Color: 4fa682 or rgb(79, 166, 130)
-    bgGradient="linear(to top right, #3F8468, #4fa682, #72B79B)"
-    bgClip="text"
+    // ** Nascent Theme Color: #4fa682 or rgb(79, 166, 130)
   >
-    <Heading fontSize="3vw">{title}</Heading>
+    <Heading fontSize="3vw">🤖</Heading>
+    <Heading px={2} fontSize="3vw" bgClip="text" bgGradient="linear(to top right, #3F8468, #4fa682, #72B79B)">{title}</Heading>
+    <Heading fontSize="3vw">⚡</Heading>
   </Flex>
 )
 
 Hero.defaultProps = {
-  title: 'Flashbots Minting Searcher',
+  title: 'Flashbots Minter',
 }
 
 export default Hero;

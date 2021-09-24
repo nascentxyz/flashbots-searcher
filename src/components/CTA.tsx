@@ -59,7 +59,9 @@ const CTA = () => (
           </Button>
         </ChakraLink>
       </Container>
-      <Text>❤️ Thanks: <ChakraLink isExternal href="https://etherscan.io/address/0x47C5C2Dbe93E4dCd9d45c856Bb6d65B66965f382"><Code>0x47C5C2Dbe93E4dCd9d45c856Bb6d65B66965f382</Code></ChakraLink>{" "} ❤️</Text>
+
+      <Text>❤️ Say thanks by donating to <ChakraLink color="blue.500" isExternal href="https://thegivingblock.com/donate/">The Giving Block Charities</ChakraLink>{" "} ❤️</Text>
+      {/* <Text>❤️ Thanks: <ChakraLink isExternal href="https://etherscan.io/address/0x47C5C2Dbe93E4dCd9d45c856Bb6d65B66965f382"><Code>0x47C5C2Dbe93E4dCd9d45c856Bb6d65B66965f382</Code></ChakraLink>{" "} ❤️</Text> */}
     </Container>
   </Container>
 )
