@@ -9,6 +9,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider resetCSS theme={theme}>
       <Component {...pageProps} />
+      <style jsx global>{`
+            html, body {
+              min-height: 100%;
+              height: 100%;
+            }
+
+            #__next {
+              height: 100%;
+              min-height: 100%;
+            }
+          `}</style>
     </ChakraProvider>
   )
 }
