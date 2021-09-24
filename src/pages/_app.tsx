@@ -2,8 +2,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 
 import theme from '../theme'
 import { AppProps } from 'next/app'
-// import "../assets/css/color/green.css";
-// import "../assets/css/style.css";
+import 'material-react-toastify/dist/ReactToastify.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

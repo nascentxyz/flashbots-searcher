@@ -13,7 +13,7 @@ import {
   Select
 } from '@chakra-ui/react';
 import styled from 'styled-components';
-
+import { ToastContainer, toast } from 'material-react-toastify';
 
 import { providers, Wallet, BigNumber } from "ethers";
 import { FlashbotsBundleProvider } from "@flashbots/ethers-provider-bundle";
@@ -119,6 +119,18 @@ const SearcherTerminal = () => {
       }).then((res) => {
         console.log("got result from SendBundle???")
         // TODO: get the response back and show simulated tx
+      }).catch((e) => {
+        console.log("send_bundle got an error from SendBundle!")
+        toast.error('❌ Searcher Failed!', {
+          position: "top-left",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        // ** If we error, we're not minting anymore
+        setIsMinting(false);
       })
   };
 
@@ -189,11 +201,13 @@ const SearcherTerminal = () => {
     authSignerPrivateKey
     }) => {
     const provider = new providers.InfuraProvider(chainId);
+    console.log("Created the infura provider:", provider);
     const flashbotsProvider = await FlashbotsBundleProvider.create(
       provider,
       new Wallet(authSignerPrivateKey),
       relayEndpoint
     );
+    console.log("Created flashbots provider:", flashbotsProvider);
 
     // ** send bundle, passing in the props
     sendBundle({
@@ -223,6 +237,17 @@ const SearcherTerminal = () => {
     margin="auto"
     px={6}
   >
+    <ToastContainer
+      position="top-left"
+      autoClose={2000}
+      hideProgressBar
+      newestOnTop
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      />
     <Container
       flexDirection="column"
       width="100%"
@@ -558,7 +583,7 @@ const SearcherTerminal = () => {
                 w="100%"
                 m={2}
               >
-                <GlitchButton id="glitch-btn-1" color="#dc143c" glitchColor="#800000" content="Stop" onclick={(_e) => {
+                <GlitchButton disabled={!isMinting} id="glitch-btn-1" color="#dc143c" glitchColor="#800000" content="Stop" onclick={(_e) => {
                   console.log("Stopping the searcher...");
                   setIsMinting(false);
                 }} />
@@ -567,9 +592,18 @@ const SearcherTerminal = () => {
                 w="100%"
                 m={2}
               >
-                <GlitchButton id="glitch-btn-2" color="#4fa682" glitchColor="#3F8468" content="Start" onclick={(_e) => {
+                <GlitchButton disabled={isMinting} id="glitch-btn-2" color="#4fa682" glitchColor="#3F8468" content="Start" onclick={(_e) => {
                   console.log("Starting the searcher...");
                   setIsMinting(true);
+                  toast.success('✅  Searcher Started!', {
+                    position: "top-left",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    // progress:
+                  });
                 }} />
               </Container>
             </Container>

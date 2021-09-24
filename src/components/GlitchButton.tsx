@@ -52,11 +52,11 @@ const BtnGlitch = styled.span<BtnContentProps>`
   filter: drop-shadow(-2px 3px ${props => props.color}) drop-shadow(-1px -3px ${props => props.color}) drop-shadow(2px 1px ${props => props.color});
 `;
 
-const GlitchButton = ({ id = "glitch-btn", color, glitchColor, content = "", onclick }: { id: string, color: string, glitchColor: string, content: string, onclick: Function }) => {
+const GlitchButton = ({ disabled=false, id = "glitch-btn", color, glitchColor, content = "", onclick }: { disabled: boolean, id: string, color: string, glitchColor: string, content: string, onclick: Function }) => {
 
   return (
     <>
-    <BtnButton className="btn" id={id} onClick={onclick}>
+    <BtnButton disabled={disabled} className="btn" id={id} onClick={onclick}>
       <BtnContent className="btn__content" color={color}>{content}</BtnContent>
       <BtnGlitch className="btn__glitch" color={glitchColor}></BtnGlitch>
       <span className="btn__label">r25</span>
