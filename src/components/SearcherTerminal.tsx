@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Terminal from 'react-console-emulator'
 import {
   Link as ChakraLink,
@@ -12,6 +12,9 @@ import {
   Input
 } from '@chakra-ui/react';
 
+import { providers, Wallet, BigNumber } from "ethers";
+import { FlashbotsBundleProvider } from "@flashbots/ethers-provider-bundle";
+
 import { Container, SimulationTerminal } from './'
 
 const SearcherTerminal = () => {
@@ -19,19 +22,131 @@ const SearcherTerminal = () => {
   const config_term_ref = useRef();
 
   // ** State Variables
-  // TODO: pass in state hooks as params to reference from utils bundle sender
-  // TODO: unless we add the execute bundle here and contain the simulation logic here
-
-  const [currentChainId, setCurrentChainId] = useState(1);
-  const [flashbotsRelayEndpoint, setFlashbotsRelayEndpoint] = useState('');
+  const [currentChainId, setCurrentChainId] = useState(5);
+  const [flashbotsRelayEndpoint, setFlashbotsRelayEndpoint] = useState('https://relay-goerli.flashbots.net');
   const [flashbotsPrivateKey, setFlashbotsPrivateKey] = useState('');
-  // TODO: what should this default param be?
   const [maxFeePerGasGwei, setMaxFeePerGasGwei] = useState(42000);
   const [maxPriorityFeePerGasGwei, setMaxPriorityFeePerGasGwei] = useState(42000);
   const [nftMinterPrivateKey, setNftMinterPrivateKey] = useState('');
-  const [nftValueWei, setNftValueWei] = useState(0.01);
-  const [nftData, setNftData] = useState('');
-  const [nftAddress, setNftAddress] = useState('');
+  const [nftValueWei, setNftValueWei] = useState(0);
+  const [nftData, setNftData] = useState('0x');
+  const [nftAddress, setNftAddress] = useState('0x957B500673A4919C9394349E6bbD1A66Dc7E5939');
+
+  // ** Track if we are minting
+  const [isMinting, setIsMinting] = useState(false);
+
+  // ** Continuously send minting transactions
+  const send_bundle = () => {
+    console.log("inside send_bundle");
+    SendBundle({
+        chainId: currentChainId,
+        maxFeePerGas: maxFeePerGasGwei,
+        maxPriorityFeePerGas: maxPriorityFeePerGasGwei,
+        minterPrivateKey: nftMinterPrivateKey,
+        value: nftValueWei,
+        data: nftData,
+        address: nftAddress,
+        relayEndpoint: flashbotsRelayEndpoint,
+        authSignerPrivateKey: flashbotsPrivateKey
+      }).then((res) => {
+        console.log("got result from SendBundle???")
+        // TODO: get the response back and show simulated tx
+      })
+  };
+
+  const GWEI = BigNumber.from(10).pow(9);
+
+  const sendBundle = async ({
+    flashbotsProvider,
+    // ** ethers
+    chainId,
+    // ** gas
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    // ** nft
+    minterPrivateKey,
+    value,
+    data,
+    address,
+    // ** flashbots
+    provider
+    }) => {
+      console.log("inside sendBundle")
+    const targetBlockNumber = (await provider.getBlockNumber()) + 1;
+    console.log("Got target block number:", targetBlockNumber);
+
+    const bundleSubmitResponse = await flashbotsProvider.sendBundle(
+      [
+        {
+          transaction: {
+            chainId: chainId,
+            type: 2,
+            value: value,
+            data: data,
+            maxFeePerGas: GWEI.mul(maxFeePerGas),
+            maxPriorityFeePerGas: GWEI.mul(maxPriorityFeePerGas),
+            to: address,
+          },
+          signer: new Wallet(minterPrivateKey, provider),
+        },
+      ],
+      targetBlockNumber
+    );
+    // console.log("Got target block number:", targetBlockNumber);
+
+    const terminal = term_ref.current ?? { pushToStdout: (s) => console.log(s)}
+    terminal.pushToStdout(`Bundle sent for block ${targetBlockNumber}`);
+    console.log(`Bundle sent for block ${targetBlockNumber}`)
+    const response = await bundleSubmitResponse.wait();
+    console.log("Got response from bundleSubmitResponse.wait()");
+    console.log(response);
+
+    if (response !== 0) {
+      terminal.pushToStdout(`Bundle not included with response: ${response}, retrying...`);
+      sendBundle(flashbotsProvider);
+    } else {
+      terminal.pushToStdout("Bundle executed successfully");
+    }
+  };
+
+  const SendBundle =  async ({
+    chainId,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    minterPrivateKey,
+    value,
+    data,
+    address,
+    relayEndpoint,
+    authSignerPrivateKey
+    }) => {
+    const provider = new providers.InfuraProvider(chainId);
+    const flashbotsProvider = await FlashbotsBundleProvider.create(
+      provider,
+      new Wallet(authSignerPrivateKey),
+      relayEndpoint
+    );
+
+    // ** send bundle, passing in the props
+    sendBundle({
+      flashbotsProvider,
+      chainId,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      minterPrivateKey,
+      value,
+      data,
+      address,
+      provider
+    });
+  };
+
+
+  useEffect(() => {
+    if(isMinting) {
+      send_bundle();
+    }
+  }, [isMinting]);
 
   return (
     <Container
@@ -159,6 +274,22 @@ const SearcherTerminal = () => {
                   setNftAddress(arguments[0]);
                 }
               },
+              start: {
+                description: 'Send Flashbots Minting Bundles',
+                usage: 'start',
+                fn: function () {
+                  setIsMinting(true);
+                }
+              },
+              stop: {
+                description: 'Send Flashbots Minting Bundles',
+                usage: 'start',
+                fn: function () {
+                  setIsMinting(false);
+                  // TODO: clear simulated transactions terminal
+                  // TODO: clear terminal window
+                }
+              }
             }}
           />
           <Text mr='auto' fontWeight={800} pt={4} mb={2}>No data is stored - verify yourself on <ChakraLink

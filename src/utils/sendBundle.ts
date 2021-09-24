@@ -16,9 +16,9 @@ const sendBundle = async ({
   data,
   address,
   // ** flashbots
-  relayEndpoint,
-  authSignerPrivateKey,
-  provider
+  provider,
+  // ** function to output results
+  displayFn
   }) => {
   const targetBlockNumber = (await provider.getBlockNumber()) + 1;
 
@@ -39,14 +39,14 @@ const sendBundle = async ({
     ],
     targetBlockNumber
   );
-  console.log(`Bundle sent for block ${targetBlockNumber}`);
+  displayFn(`Bundle sent for block ${targetBlockNumber}`);
   const response = await bundleSubmitResponse.wait();
 
   if (response !== 0) {
-    console.log(`Bundle not included with response: ${response}, retrying...`);
+    displayFn(`Bundle not included with response: ${response}, retrying...`);
     sendBundle(flashbotsProvider);
   } else {
-    console.log("Bundle executed successfully");
+    displayFn("Bundle executed successfully");
   }
 };
 
@@ -59,7 +59,8 @@ const SendBundle =  async ({
   data,
   address,
   relayEndpoint,
-  authSignerPrivateKey
+  authSignerPrivateKey,
+  displayFn
   }) => {
   const provider = new providers.InfuraProvider(chainId);
   const flashbotsProvider = await FlashbotsBundleProvider.create(
@@ -78,9 +79,8 @@ const SendBundle =  async ({
     value,
     data,
     address,
-    relayEndpoint,
-    authSignerPrivateKey,
-    provider
+    provider,
+    displayFn
   });
 };
 

@@ -4,8 +4,7 @@ import {
   SearcherTerminal,
   Main,
   DarkModeSwitch,
-  CTA,
-  SimulationTerminal
+  CTA
 } from '../components';
 
 const Index = () => (
@@ -16,9 +15,6 @@ const Index = () => (
     </Main>
 
     <DarkModeSwitch />
-    {/* <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer> */}
     <CTA />
   </Container>
 )
