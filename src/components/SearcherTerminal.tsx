@@ -9,7 +9,8 @@ import {
   NumberDecrementStepper,
   Text,
   Heading,
-  Input
+  Input,
+  Select
 } from '@chakra-ui/react';
 
 import { providers, Wallet, BigNumber } from "ethers";
@@ -22,8 +23,8 @@ const SearcherTerminal = () => {
   const config_term_ref = useRef();
 
   // ** State Variables
-  const [currentChainId, setCurrentChainId] = useState(5);
-  const [flashbotsRelayEndpoint, setFlashbotsRelayEndpoint] = useState('https://relay-goerli.flashbots.net');
+  const [currentChainId, setCurrentChainId] = useState(1);
+  const [flashbotsRelayEndpoint, setFlashbotsRelayEndpoint] = useState('https://relay.flashbots.net');
   const [flashbotsPrivateKey, setFlashbotsPrivateKey] = useState('');
   const [maxFeePerGasGwei, setMaxFeePerGasGwei] = useState(42000);
   const [maxPriorityFeePerGasGwei, setMaxPriorityFeePerGasGwei] = useState(42000);
@@ -34,6 +35,54 @@ const SearcherTerminal = () => {
 
   // ** Track if we are minting
   const [isMinting, setIsMinting] = useState(false);
+
+  // ** Curated Configurations
+  const [curatedConfig, setCuratedConfig] = useState('mainnet');
+
+  // ** Initial Config load
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  const setConfig = () => {
+    // ** Check if we have item in local storage
+    let localCuratedConfig = localStorage.getItem('FlashbotsMintingSearcherSelectedConfig');
+    if (localCuratedConfig !== undefined) {
+      setCuratedConfig(localCuratedConfig);
+    } else {
+      localCuratedConfig = curatedConfig;
+    }
+    if(localCuratedConfig === 'empty') {
+      setCurrentChainId(0);
+      setFlashbotsRelayEndpoint('');
+      setMaxFeePerGasGwei(0);
+      setMaxPriorityFeePerGasGwei(0);
+    }
+    if (localCuratedConfig === 'mainnet') {
+      setCurrentChainId(1);
+      setFlashbotsRelayEndpoint('https://relay.flashbots.net');
+      setMaxFeePerGasGwei(42000);
+      setMaxPriorityFeePerGasGwei(42000);
+    }
+    if (localCuratedConfig === 'goerli') {
+      setCurrentChainId(5);
+      setFlashbotsRelayEndpoint('https://relay-goerli.flashbots.net');
+      setMaxFeePerGasGwei(42000);
+      setMaxPriorityFeePerGasGwei(42000);
+    }
+  };
+
+  useEffect(() => {
+    // ** Only Update Local Storage Value when Not initial Load
+    if(!initialLoad) {
+      localStorage.setItem('FlashbotsMintingSearcherSelectedConfig', curatedConfig);
+    }
+    setConfig();
+    setInitialLoad(false);
+  }, [curatedConfig]);
+
+  // ** Set config on initial load based on local storage value
+  // useEffect(() => {
+  //   setConfig();
+  // }, []);
 
   // ** Continuously send minting transactions
   const send_bundle = () => {
@@ -170,8 +219,8 @@ const SearcherTerminal = () => {
             flexDirection="column"
             width="100%"
             maxWidth="400px"
-            maxHeight="400px"
-            height="400px"
+            maxHeight="600px"
+            height="600px"
             px={4}
           >
         <Terminal
@@ -179,8 +228,8 @@ const SearcherTerminal = () => {
             welcomeMessage={'Welcome to The Search... \nType \'help\' for a list of commands.'}
             promptLabel={'~'}
             style={{
-              height: '400px',
-              maxHeight: '400px',
+              height: '600px',
+              maxHeight: '600px',
               marginRight: '1.5em',
               maxWidth: '400px',
               width: '100%',
@@ -302,11 +351,31 @@ const SearcherTerminal = () => {
             flexDirection="column"
             width="100%"
             maxWidth="600px"
-            maxHeight="400px"
-            height="400px"
+            maxHeight="600px"
+            height="600px"
             px={4}
           >
             <Heading as="h6" fontSize='2xl' mr='auto' mb={2}>Searcher Config</Heading>
+
+            <Container
+              flexDirection="row"
+              width="100%"
+              pb={2}
+            >
+              <Text mr='auto' width='fit-content' minWidth='200px'>Curated Configurations</Text>
+              <Select
+                // placeholder="Curated Configs"
+                value={curatedConfig}
+                onChange={(e) => setCuratedConfig(e.target.value)}
+                width='100%'
+                size='sm'
+                >
+                {/* <option value="empty">Empty</option> */}
+                <option value="mainnet">Ethereum Mainnet - Chain ID 1</option>
+                <option value="goerli">Ethereum Goerli - Chain ID 5</option>
+              </Select>
+            </Container>
+            <Text mr='auto' fontWeight={800} pb={4}>This will clear fields below!</Text>
             <Container
               flexDirection="row"
               width="100%"
