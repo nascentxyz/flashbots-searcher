@@ -375,7 +375,7 @@ const SearcherTerminal = () => {
                 <option value="goerli">Ethereum Goerli - Chain ID 5</option>
               </Select>
             </Container>
-            <Text mr='auto' fontWeight={800} pb={4}>This will clear fields below!</Text>
+            <Text ml='auto' fontSize="sm" fontWeight={800} pb={4}>* Select Changes Chain ID and Relay Endpoint</Text>
             <Container
               flexDirection="row"
               width="100%"
