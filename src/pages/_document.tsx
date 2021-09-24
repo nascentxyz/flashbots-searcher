@@ -15,11 +15,13 @@ export default class Document extends NextDocument {
           <NextScript />
           <style jsx global>{`
             html, body {
+              min-height: 100%;
               height: 100%;
             }
 
             #__next {
               height: 100%;
+              min-height: 100%;
             }
           `}</style>
         </body>
