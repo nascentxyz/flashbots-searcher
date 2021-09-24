@@ -16,7 +16,7 @@ const Hero = ({ title }: { title: string }) => (
 )
 
 Hero.defaultProps = {
-  title: 'Flashbots Minter',
+  title: 'Flashbots Searcher',
 }
 
 export default Hero;
