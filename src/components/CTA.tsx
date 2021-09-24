@@ -7,7 +7,9 @@ const CTA = () => (
     flexDirection="row"
     bottom="0"
     width="100%"
-    py={3}
+    // pt={8}
+    mt='auto'
+    pb={2}
   >
       <Container
       flexDirection="column"

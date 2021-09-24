@@ -77,13 +77,15 @@ const SearcherTerminal = () => {
     }
     if (localCuratedConfig === 'mainnet') {
       setCurrentChainId(1);
-      setFlashbotsRelayEndpoint('https://relay.flashbots.net');
+      setFlashbotsRelayEndpoint('https://rpc.flashbots.net');
+      // ** outdated flashbots relay endpoint: https://relay.flashbots.net
       setMaxFeePerGasGwei(42000);
       setMaxPriorityFeePerGasGwei(42000);
     }
     if (localCuratedConfig === 'goerli') {
       setCurrentChainId(5);
-      setFlashbotsRelayEndpoint('https://relay-goerli.flashbots.net');
+      setFlashbotsRelayEndpoint('https://rpc.flashbots.net');
+      // ** outdated flashbots relay endpoint: https://relay-goerli.flashbots.net
       setMaxFeePerGasGwei(42000);
       setMaxPriorityFeePerGasGwei(42000);
     }
@@ -98,10 +100,35 @@ const SearcherTerminal = () => {
     setInitialLoad(false);
   }, [curatedConfig]);
 
-  // ** Set config on initial load based on local storage value
-  // useEffect(() => {
-  //   setConfig();
-  // }, []);
+  // ** Stop Search Refactor
+  const stopSearch = () => {
+    console.log("Stopping the searcher...");
+    setIsMinting(false);
+    // TODO: clear simulated transactions terminal
+    // TODO: clear terminal window
+    toast('🚨 Stopped Searcher!', {
+      position: "top-left",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  }
+
+  // ** Start Search Refactor
+  const startSearch = () => {
+    console.log("Starting the searcher...");
+    setIsMinting(true);
+    toast.success('✅  Searcher Started!', {
+      position: "top-left",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  }
 
   // ** Continuously send minting transactions
   const send_bundle = () => {
@@ -172,7 +199,7 @@ const SearcherTerminal = () => {
       ],
       targetBlockNumber
     );
-    // console.log("Got target block number:", targetBlockNumber);
+    console.log("sent bundle:", bundleSubmitResponse);
 
     const terminal = term_ref.current ?? { pushToStdout: (s) => console.log(s)}
     terminal.pushToStdout(`Bundle sent for block ${targetBlockNumber}`);
@@ -372,16 +399,14 @@ const SearcherTerminal = () => {
                 description: 'Send Flashbots Minting Bundles',
                 usage: 'start',
                 fn: function () {
-                  setIsMinting(true);
+                  startSearch();
                 }
               },
               stop: {
                 description: 'Send Flashbots Minting Bundles',
                 usage: 'start',
                 fn: function () {
-                  setIsMinting(false);
-                  // TODO: clear simulated transactions terminal
-                  // TODO: clear terminal window
+                  stopSearch();
                 }
               }
             }}
@@ -584,8 +609,7 @@ const SearcherTerminal = () => {
                 m={2}
               >
                 <GlitchButton disabled={!isMinting} id="glitch-btn-1" color="#dc143c" glitchColor="#800000" content="Stop" onclick={(_e) => {
-                  console.log("Stopping the searcher...");
-                  setIsMinting(false);
+                  stopSearch();
                 }} />
               </Container>
               <Container
@@ -593,17 +617,7 @@ const SearcherTerminal = () => {
                 m={2}
               >
                 <GlitchButton disabled={isMinting} id="glitch-btn-2" color="#4fa682" glitchColor="#3F8468" content="Start" onclick={(_e) => {
-                  console.log("Starting the searcher...");
-                  setIsMinting(true);
-                  toast.success('✅  Searcher Started!', {
-                    position: "top-left",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    // progress:
-                  });
+                  startSearch();
                 }} />
               </Container>
             </Container>
