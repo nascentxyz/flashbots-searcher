@@ -1,5 +1,8 @@
 {
-  "private": true,
+  "name": "flashbots-searcher",
+  "description": "Generalized UI for running a Flashbots Searcher",
+  "author": "Andreas Bigger <abigger@nascent.xyz>",
+  "private": false,
   "scripts": {
     "dev": "next",
     "build": "next build",

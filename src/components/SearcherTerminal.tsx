@@ -297,7 +297,7 @@ const SearcherTerminal = () => {
           >
         <Terminal
             ref={term_ref}
-            welcomeMessage={'Welcome to The Search... \nType \'help\' for a list of commands.'}
+            welcomeMessage={'Welcome to Flashbots Searcher... \nType \'help\' for a list of commands.'}
             promptLabel={'~'}
             style={{
               height: '600px',
